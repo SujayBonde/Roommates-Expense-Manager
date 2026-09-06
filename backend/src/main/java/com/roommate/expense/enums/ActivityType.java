@@ -1,0 +1,15 @@
+package com.roommate.expense.enums;
+
+public enum ActivityType {
+    HOUSEHOLD_CREATED,
+    MEMBER_JOINED,
+    MEMBER_LEFT,
+    MEMBER_REMOVED,
+    EXPENSE_CREATED,
+    EXPENSE_UPDATED,
+    EXPENSE_DELETED,
+    LOAN_CREATED,
+    LOAN_PAYMENT,
+    LOAN_SETTLED,
+    SETTLEMENT_CREATED
+}

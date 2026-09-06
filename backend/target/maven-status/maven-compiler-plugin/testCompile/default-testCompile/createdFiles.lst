@@ -1,0 +1,4 @@
+com\roommate\expense\util\SplitCalculatorTest.class
+com\roommate\expense\service\LoanServiceTest.class
+com\roommate\expense\service\BalanceServiceTest.class
+com\roommate\expense\util\MinimumSettlementCalculatorTest.class
