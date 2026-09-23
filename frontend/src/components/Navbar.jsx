@@ -12,7 +12,7 @@ import {
   Users,
   CheckCheck,
   Check,
-  Building,
+  Building2,
 } from 'lucide-react';
 import axiosClient from '../api/axiosClient';
 import { formatDateTime } from '../utils/formatters';
@@ -48,7 +48,7 @@ export default function Navbar({ onOpenCreateJoin }) {
 
   useEffect(() => {
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 15000); // refresh every 15s
+    const interval = setInterval(fetchNotifications, 15000);
     return () => clearInterval(interval);
   }, []);
 
@@ -93,42 +93,44 @@ export default function Navbar({ onOpenCreateJoin }) {
   };
 
   return (
-    <header className="sticky top-0 z-30 h-16 border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
-      <div className="flex items-center justify-between h-full px-4 sm:px-6">
+    <header className="sticky top-0 z-30 h-14 border-b border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-[#0e131d]/95 backdrop-blur-sm">
+      <div className="flex items-center justify-between h-full px-4 sm:px-6 max-w-7xl mx-auto w-full">
         {/* Left: Brand & Household Switcher */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3.5">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
-              <Building className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-lg bg-slate-900 dark:bg-teal-600 flex items-center justify-center text-white shadow-sm">
+              <Building2 className="w-4 h-4" />
             </div>
-            <div className="hidden sm:block">
-              <span className="text-base font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-indigo-600 dark:from-brand-400 dark:to-indigo-300">
-                RoomMate
-              </span>
-              <span className="text-xs ml-1 font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                Manager
-              </span>
+            <div className="hidden sm:flex flex-col">
+              <div className="flex items-center gap-1.5 leading-none">
+                <span className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">
+                  Roommates
+                </span>
+                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+                  Manager
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="h-5 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block" />
+          <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block" />
 
           {/* Household Selector Dropdown */}
           <div className="relative" ref={householdRef}>
             <button
               onClick={() => setShowHouseholdMenu(!showHouseholdMenu)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800/60 text-sm font-medium transition-colors"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 text-xs font-medium transition-colors"
             >
-              <Users className="w-4 h-4 text-brand-600 dark:text-brand-400" />
+              <Users className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
               <span className="max-w-[120px] sm:max-w-[180px] truncate font-semibold text-slate-800 dark:text-slate-200">
-                {currentHousehold ? currentHousehold.name : 'Select Flat'}
+                {currentHousehold ? currentHousehold.name : 'Select Household'}
               </span>
               <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
             </button>
 
             {showHouseholdMenu && (
-              <div className="absolute left-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 animate-slide-up">
-                <div className="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              <div className="absolute left-0 mt-1.5 w-64 bg-white dark:bg-[#111622] rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 py-1 z-50 animate-slide-up">
+                <div className="px-3 py-1.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
                   Your Households
                 </div>
                 <div className="max-h-56 overflow-y-auto">
@@ -139,26 +141,26 @@ export default function Navbar({ onOpenCreateJoin }) {
                         switchHousehold(h.id);
                         setShowHouseholdMenu(false);
                       }}
-                      className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors ${
+                      className={`w-full flex items-center justify-between px-3 py-2 text-xs text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors ${
                         currentHousehold?.id === h.id
-                          ? 'font-semibold text-brand-600 dark:text-brand-400'
+                          ? 'font-semibold text-teal-600 dark:text-teal-400 bg-teal-50/50 dark:bg-teal-950/20'
                           : 'text-slate-700 dark:text-slate-300'
                       }`}
                     >
                       <span className="truncate">{h.name}</span>
-                      {currentHousehold?.id === h.id && <Check className="w-4 h-4" />}
+                      {currentHousehold?.id === h.id && <Check className="w-3.5 h-3.5" />}
                     </button>
                   ))}
                 </div>
-                <div className="border-t border-slate-100 dark:border-slate-800 my-1 pt-1">
+                <div className="border-t border-slate-100 dark:border-slate-800/80 my-1 pt-1">
                   <button
                     onClick={() => {
                       setShowHouseholdMenu(false);
                       onOpenCreateJoin();
                     }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-brand-600 dark:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-950/40 font-medium transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-teal-700 dark:text-teal-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 font-semibold transition-colors"
                   >
-                    <Plus className="w-4 h-4" />
+                    <Plus className="w-3.5 h-3.5" />
                     Create or Join Group
                   </button>
                 </div>
@@ -168,71 +170,71 @@ export default function Navbar({ onOpenCreateJoin }) {
         </div>
 
         {/* Right: Theme Toggle, Notifications, User Menu */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Dark / Light Toggle */}
           <button
             onClick={toggleTheme}
             aria-label="Toggle theme"
-            className="p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
+            className="p-1.5 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80 rounded-lg transition-colors"
           >
-            {theme === 'dark' ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5" />}
+            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
           </button>
 
           {/* Notifications */}
           <div className="relative" ref={notificationRef}>
             <button
               onClick={() => setShowNotifications(!showNotifications)}
-              className="relative p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
+              className="relative p-1.5 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80 rounded-lg transition-colors"
               aria-label="Notifications"
             >
-              <Bell className="w-5 h-5" />
+              <Bell className="w-4 h-4" />
               {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white ring-2 ring-white dark:ring-slate-900 animate-pulse">
+                <span className="absolute top-1 right-1 flex h-3.5 min-w-3.5 px-1 items-center justify-center rounded-full bg-rose-600 text-[9px] font-bold text-white">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
             </button>
 
             {showNotifications && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 z-50 animate-slide-up overflow-hidden">
-                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#111622] rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 z-50 animate-slide-up overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-slate-900 dark:text-slate-100">Notifications</span>
+                    <span className="text-xs font-bold text-slate-900 dark:text-slate-100">Notifications</span>
                     {unreadCount > 0 && (
-                      <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300">
-                        {unreadCount} new
+                      <span className="px-1.5 py-0.2 rounded text-[10px] font-semibold bg-teal-50 dark:bg-teal-950 text-teal-700 dark:text-teal-300">
+                        {unreadCount} unread
                       </span>
                     )}
                   </div>
                   {unreadCount > 0 && (
                     <button
                       onClick={handleMarkAllRead}
-                      className="text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 flex items-center gap-1"
+                      className="text-[11px] font-medium text-teal-700 hover:text-teal-800 dark:text-teal-400 flex items-center gap-1"
                     >
-                      <CheckCheck className="w-3.5 h-3.5" />
+                      <CheckCheck className="w-3 h-3" />
                       Mark all read
                     </button>
                   )}
                 </div>
 
-                <div className="max-h-80 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
+                <div className="max-h-80 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/60">
                   {notifications.length === 0 ? (
-                    <div className="p-8 text-center text-sm text-slate-400">
+                    <div className="p-8 text-center text-xs text-slate-400">
                       No notifications yet
                     </div>
                   ) : (
                     notifications.map((n) => (
                       <div
                         key={n.id}
-                        className={`p-3.5 flex items-start justify-between gap-3 text-sm transition-colors ${
-                          n.isRead ? 'opacity-70' : 'bg-brand-50/40 dark:bg-brand-950/20'
+                        className={`p-3 flex items-start justify-between gap-3 text-xs transition-colors ${
+                          n.isRead ? 'opacity-65' : 'bg-slate-50/70 dark:bg-slate-800/30'
                         }`}
                       >
-                        <div className="space-y-1">
+                        <div className="space-y-0.5">
                           <p className="text-slate-800 dark:text-slate-200 text-xs leading-relaxed">
                             {n.message}
                           </p>
-                          <p className="text-[11px] text-slate-400">
+                          <p className="text-[10px] text-slate-400">
                             {formatDateTime(n.createdAt)}
                           </p>
                         </div>
@@ -240,9 +242,9 @@ export default function Navbar({ onOpenCreateJoin }) {
                           <button
                             onClick={(e) => handleMarkAsRead(n.id, e)}
                             title="Mark as read"
-                            className="p-1 hover:bg-brand-100 dark:hover:bg-brand-900 rounded text-brand-600 dark:text-brand-400 shrink-0"
+                            className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded text-teal-600 dark:text-teal-400 shrink-0"
                           >
-                            <Check className="w-3.5 h-3.5" />
+                            <Check className="w-3 h-3" />
                           </button>
                         )}
                       </div>
@@ -253,34 +255,36 @@ export default function Navbar({ onOpenCreateJoin }) {
             )}
           </div>
 
+          <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 mx-0.5" />
+
           {/* User Menu */}
           <div className="relative" ref={userRef}>
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
+              className="flex items-center gap-2 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
             >
               <img
-                src={user?.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=4f46e5&color=fff`}
+                src={user?.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=0f766e&color=fff`}
                 alt={user?.name}
-                className="w-8 h-8 rounded-lg object-cover ring-1 ring-slate-200 dark:ring-slate-700"
+                className="w-7 h-7 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700"
               />
-              <span className="text-sm font-semibold text-slate-800 dark:text-slate-200 hidden md:block max-w-[120px] truncate">
+              <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 hidden md:block max-w-[120px] truncate">
                 {user?.name}
               </span>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden md:block" />
+              <ChevronDown className="w-3 h-3 text-slate-400 hidden md:block" />
             </button>
 
             {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 animate-slide-up">
-                <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800">
-                  <p className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">{user?.name}</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user?.email}</p>
+              <div className="absolute right-0 mt-1.5 w-52 bg-white dark:bg-[#111622] rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 py-1 z-50 animate-slide-up">
+                <div className="px-3.5 py-2 border-b border-slate-100 dark:border-slate-800/80">
+                  <p className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">{user?.name}</p>
+                  <p className="text-[11px] text-slate-400 truncate mt-0.5">{user?.email}</p>
                 </div>
                 <button
                   onClick={logout}
-                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors font-medium text-left"
+                  className="w-full flex items-center gap-2 px-3.5 py-2 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors font-medium text-left"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <LogOut className="w-3.5 h-3.5" />
                   Sign Out
                 </button>
               </div>

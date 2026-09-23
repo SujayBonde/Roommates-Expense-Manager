@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   Plus,
   ArrowRight,
-  Receipt,
   Calendar,
   CreditCard,
 } from 'lucide-react';
@@ -40,39 +39,39 @@ export default function Settlements() {
   }, [currentHousehold]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b border-slate-200/60 dark:border-slate-800/60">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+          <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
             Settlement Payments
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Audit history of cleared debts and cash transfers between roommates in {currentHousehold?.name}
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Audit history of debt repayments and balance-clearing transfers in {currentHousehold?.name}
           </p>
         </div>
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold shadow-md shadow-brand-500/20 transition-all hover:scale-[1.02]"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-semibold shadow-sm transition-colors"
         >
-          <Plus className="w-4 h-4" />
-          <span>Record Payment</span>
+          <Plus className="w-3.5 h-3.5" />
+          <span>Record Settlement</span>
         </button>
       </div>
 
       {loading && settlements.length === 0 ? (
-        <LoadingSpinner text="Loading settlement records..." />
+        <LoadingSpinner text="Loading settlement audit..." />
       ) : settlements.length === 0 ? (
-        <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800">
-          <CheckCircle2 className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
-          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">No settlements recorded</h3>
-          <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
-            When a roommate transfers money via UPI, net banking, or cash to clear their debt, record it here to update balances automatically.
+        <div className="p-12 text-center bg-white dark:bg-[#111622] rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-subtle">
+          <CheckCircle2 className="w-10 h-10 text-slate-300 dark:text-slate-700 mx-auto mb-2" />
+          <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200">No settlements recorded</h3>
+          <p className="text-[11px] text-slate-400 mt-0.5 max-w-sm mx-auto">
+            When roommates transfer funds via UPI, cash, or bank transfer to clear balances, record them here to automatically recalculate net debts.
           </p>
         </div>
       ) : (
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+        <div className="bg-white dark:bg-[#111622] rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-subtle overflow-hidden">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800/60">
             {settlements.map((s) => {
               const isPayerMe = s.payerId === user?.id;
               const isReceiverMe = s.receiverId === user?.id;
@@ -80,24 +79,24 @@ export default function Settlements() {
               return (
                 <div
                   key={s.id}
-                  className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
+                  className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 dark:hover:bg-slate-800/30 transition-colors"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-200 dark:border-emerald-800">
-                      <CreditCard className="w-5 h-5" />
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0 border border-slate-200/60 dark:border-slate-700/60">
+                      <CreditCard className="w-4 h-4" />
                     </div>
 
                     <div>
-                      <div className="flex items-center gap-2 text-sm font-bold text-slate-800 dark:text-slate-200">
-                        <span className={isPayerMe ? 'text-rose-600 font-extrabold' : ''}>
+                      <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-900 dark:text-slate-100">
+                        <span className={isPayerMe ? 'text-rose-700 dark:text-rose-400' : ''}>
                           {s.payerName} {isPayerMe ? '(You)' : ''}
                         </span>
-                        <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-                        <span className={isReceiverMe ? 'text-emerald-600 font-extrabold' : ''}>
+                        <ArrowRight className="w-3 h-3 text-slate-400" />
+                        <span className={isReceiverMe ? 'text-emerald-700 dark:text-emerald-400' : ''}>
                           {s.receiverName} {isReceiverMe ? '(You)' : ''}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
+                      <div className="flex items-center gap-2 mt-0.5 text-[11px] text-slate-400">
                         <span className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
                           {formatDate(s.paymentDate)}
@@ -108,11 +107,11 @@ export default function Settlements() {
                   </div>
 
                   <div className="sm:text-right">
-                    <span className="text-lg font-black font-mono text-emerald-600 dark:text-emerald-400">
+                    <span className="text-sm font-bold font-mono text-emerald-700 dark:text-emerald-400 tabular-nums">
                       {formatCurrency(s.amount)}
                     </span>
-                    <span className="text-[11px] font-bold text-slate-400 block uppercase tracking-wider">
-                      Settled
+                    <span className="text-[10px] font-semibold text-slate-400 block uppercase tracking-wider">
+                      Cleared
                     </span>
                   </div>
                 </div>

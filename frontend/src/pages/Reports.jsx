@@ -1,20 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useHousehold } from '../context/HouseholdContext';
 import axiosClient from '../api/axiosClient';
-import { formatCurrency, getCategoryMeta } from '../utils/formatters';
+import { formatCurrency } from '../utils/formatters';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import {
-  BarChart3,
-  Calendar,
-  TrendingUp,
-  Receipt,
-  Award,
-  PieChart as PieIcon,
-} from 'lucide-react';
-import {
   ResponsiveContainer,
-  AreaChart,
-  Area,
   BarChart,
   Bar,
   PieChart,
@@ -26,7 +16,7 @@ import {
   CartesianGrid,
 } from 'recharts';
 
-const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#06b6d4', '#8b5cf6', '#f43f5e', '#14b8a6'];
+const CHART_COLORS = ['#0d9488', '#0284c7', '#d97706', '#7c3aed', '#e11d48', '#059669', '#ea580c', '#64748b'];
 
 export default function Reports() {
   const { currentHousehold } = useHousehold();
@@ -87,11 +77,6 @@ export default function Reports() {
     percentage: parseFloat(c.percentage),
   })) || [];
 
-  const trendData = report?.monthlyTrend?.map((t) => ({
-    month: t.month,
-    amount: parseFloat(t.amount),
-  })) || [];
-
   const contributionData = report?.memberContributions?.map((m) => ({
     name: m.name.split(' ')[0],
     paid: parseFloat(m.totalPaid),
@@ -99,20 +84,20 @@ export default function Reports() {
   })) || [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header & Date Range Tabs */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-1 border-b border-slate-200/60 dark:border-slate-800/60">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+          <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
             Financial Reports & Analytics
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Period: {report?.period || 'Selected timeframe'}
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Statement for {report?.period || 'Selected timeframe'}
           </p>
         </div>
 
-        {/* Period Selector Buttons */}
-        <div className="flex flex-wrap gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl w-fit">
+        {/* Period Selector Tabs */}
+        <div className="flex flex-wrap gap-1 p-1 bg-slate-100 dark:bg-slate-800/70 rounded-lg w-fit">
           {[
             { id: 'THIS_MONTH', label: 'This Month' },
             { id: 'LAST_MONTH', label: 'Last Month' },
@@ -123,9 +108,9 @@ export default function Reports() {
             <button
               key={tab.id}
               onClick={() => setPeriod(tab.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`px-3 py-1 rounded-md text-xs font-semibold transition-colors ${
                 period === tab.id
-                  ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm'
+                  ? 'bg-white dark:bg-[#111622] text-slate-900 dark:text-white shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
@@ -137,14 +122,14 @@ export default function Reports() {
 
       {/* Custom Date Range Picker */}
       {period === 'CUSTOM' && (
-        <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-wrap items-center gap-3 animate-slide-up text-xs font-semibold">
+        <div className="p-3.5 bg-white dark:bg-[#111622] rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-subtle flex flex-wrap items-center gap-3 animate-slide-up text-xs font-medium">
           <div className="flex items-center gap-2">
             <span className="text-slate-400">From:</span>
             <input
               type="date"
               value={customStart}
               onChange={(e) => setCustomStart(e.target.value)}
-              className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 outline-none"
+              className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 outline-none"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -153,12 +138,12 @@ export default function Reports() {
               type="date"
               value={customEnd}
               onChange={(e) => setCustomEnd(e.target.value)}
-              className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 outline-none"
+              className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 outline-none"
             />
           </div>
           <button
             onClick={fetchReport}
-            className="px-4 py-1.5 rounded-xl bg-brand-600 text-white font-bold hover:bg-brand-700 transition-colors ml-auto"
+            className="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-semibold transition-colors ml-auto text-xs"
           >
             Apply Range
           </button>
@@ -166,80 +151,78 @@ export default function Reports() {
       )}
 
       {loading && !report ? (
-        <LoadingSpinner text="Crunching numbers & generating analytics..." />
+        <LoadingSpinner text="Crunching analytics..." />
       ) : (
         <>
-          {/* 5 KPI Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            <div className="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
-                Total Expenses
+          {/* 5 KPI Metric Cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+            <div className="p-4 bg-white dark:bg-[#111622] rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-subtle">
+              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+                Total Expenditure
               </span>
-              <span className="text-2xl font-black font-mono text-slate-900 dark:text-slate-100">
+              <span className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">
                 {formatCurrency(report?.totalExpenses)}
               </span>
             </div>
 
-            <div className="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+            <div className="p-4 bg-white dark:bg-[#111622] rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-subtle">
+              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
                 Daily Average
               </span>
-              <span className="text-2xl font-black font-mono text-slate-900 dark:text-slate-100">
+              <span className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">
                 {formatCurrency(report?.dailyAverage)}
               </span>
             </div>
 
-            <div className="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
-                Highest Expense
+            <div className="p-4 bg-white dark:bg-[#111622] rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-subtle">
+              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+                Highest Single Spend
               </span>
-              <span className="text-xl font-black font-mono text-slate-900 dark:text-slate-100 block truncate">
+              <span className="text-lg font-bold font-mono text-slate-900 dark:text-slate-100 block truncate tabular-nums">
                 {formatCurrency(report?.highestExpenseAmount)}
               </span>
               <span className="text-[11px] text-slate-400 truncate block mt-0.5">
-                "{report?.highestExpenseTitle}"
+                "{report?.highestExpenseTitle || 'None'}"
               </span>
             </div>
 
-            <div className="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+            <div className="p-4 bg-white dark:bg-[#111622] rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-subtle">
+              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
                 Top Category
               </span>
-              <span className="text-xl font-extrabold text-brand-600 dark:text-brand-400 block truncate">
-                {report?.mostExpensiveCategory || 'N/A'}
+              <span className="text-base font-bold text-teal-700 dark:text-teal-400 block truncate">
+                {report?.mostExpensiveCategory || 'None'}
               </span>
             </div>
 
-            <div className="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+            <div className="p-4 bg-white dark:bg-[#111622] rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-subtle">
+              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
                 Top Spender
               </span>
-              <span className="text-lg font-black text-slate-900 dark:text-slate-100 block truncate">
-                {report?.topSpenderName || 'N/A'}
+              <span className="text-base font-bold text-slate-900 dark:text-slate-100 block truncate">
+                {report?.topSpenderName || 'None'}
               </span>
-              <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold block mt-0.5">
+              <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400 font-bold block mt-0.5 tabular-nums">
                 {formatCurrency(report?.topSpenderAmount)}
               </span>
             </div>
           </div>
 
           {/* Charts Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Category Doughnut Chart */}
-            <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
-                    Category Breakdown
-                  </h3>
-                  <p className="text-xs text-slate-400">Expense distribution by category</p>
-                </div>
+            <div className="p-5 bg-white dark:bg-[#111622] rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-subtle space-y-3">
+              <div>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
+                  Category Breakdown
+                </h3>
+                <p className="text-[11px] text-slate-400">Proportional spend across tags</p>
               </div>
 
-              <div className="h-64 w-full">
+              <div className="h-56 w-full">
                 {categoryData.length === 0 ? (
                   <div className="h-full flex items-center justify-center text-xs text-slate-400">
-                    No data for this period
+                    No expense data for this timeframe
                   </div>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
@@ -248,23 +231,24 @@ export default function Reports() {
                         data={categoryData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={65}
-                        outerRadius={95}
+                        innerRadius={55}
+                        outerRadius={80}
                         paddingAngle={3}
                         dataKey="value"
                       >
                         {categoryData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                         ))}
                       </Pie>
                       <Tooltip
                         formatter={(val) => formatCurrency(val)}
                         contentStyle={{
-                          backgroundColor: '#1e1b4b',
-                          borderRadius: '12px',
+                          backgroundColor: '#0f172a',
+                          borderRadius: '8px',
                           color: '#fff',
                           border: 'none',
-                          fontSize: '12px',
+                          fontSize: '11px',
+                          padding: '8px 12px',
                         }}
                       />
                     </PieChart>
@@ -273,14 +257,14 @@ export default function Reports() {
               </div>
 
               {/* Legend Table */}
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-xs">
                 {categoryData.map((c, i) => (
-                  <div key={c.name} className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40">
+                  <div key={c.name} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-850">
                     <div className="flex items-center gap-2 truncate">
-                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                      <span className="font-semibold text-slate-700 dark:text-slate-300 truncate">{c.name}</span>
+                      <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }} />
+                      <span className="font-medium text-slate-700 dark:text-slate-300 truncate">{c.name}</span>
                     </div>
-                    <span className="font-mono font-bold text-slate-900 dark:text-slate-100 shrink-0">
+                    <span className="font-mono font-bold text-slate-900 dark:text-slate-100 shrink-0 tabular-nums">
                       {c.percentage}%
                     </span>
                   </div>
@@ -289,41 +273,42 @@ export default function Reports() {
             </div>
 
             {/* Member Contributions Bar Chart */}
-            <div className="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+            <div className="p-5 bg-white dark:bg-[#111622] rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-subtle space-y-3">
               <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
-                  Member Financial Contribution
+                <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
+                  Member Upfront Paid vs. Share
                 </h3>
-                <p className="text-xs text-slate-400">Who paid vs. Who consumed</p>
+                <p className="text-[11px] text-slate-400">Total upfront payment vs consumption share</p>
               </div>
 
-              <div className="h-64 w-full">
+              <div className="h-56 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={contributionData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.5} />
-                    <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} />
-                    <YAxis stroke="#94a3b8" fontSize={11} tickFormatter={(v) => `₹${v}`} />
+                  <BarChart data={contributionData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.4} vertical={false} />
+                    <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
+                    <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} tickFormatter={(v) => `₹${v}`} />
                     <Tooltip
                       formatter={(val) => formatCurrency(val)}
                       contentStyle={{
-                        backgroundColor: '#1e1b4b',
-                        borderRadius: '12px',
+                        backgroundColor: '#0f172a',
+                        borderRadius: '8px',
                         color: '#fff',
                         border: 'none',
-                        fontSize: '12px',
+                        fontSize: '11px',
+                        padding: '8px 12px',
                       }}
                     />
-                    <Bar dataKey="paid" name="Total Paid" fill="#6366f1" radius={[6, 6, 0, 0]} />
-                    <Bar dataKey="share" name="Total Share" fill="#ec4899" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="paid" name="Total Paid" fill="#0d9488" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="share" name="Total Share" fill="#64748b" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-xs">
                 {contributionData.map((m) => (
-                  <div key={m.name} className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40 flex justify-between">
-                    <span className="font-bold text-slate-800 dark:text-slate-200">{m.name}</span>
-                    <span className="font-mono text-brand-600 dark:text-brand-400 font-bold">
+                  <div key={m.name} className="p-2 rounded-lg bg-slate-50 dark:bg-slate-850 flex justify-between">
+                    <span className="font-semibold text-slate-800 dark:text-slate-200">{m.name}</span>
+                    <span className="font-mono text-teal-700 dark:text-teal-400 font-bold tabular-nums">
                       Paid: {formatCurrency(m.paid)}
                     </span>
                   </div>

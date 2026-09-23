@@ -6,8 +6,6 @@ import { formatCurrency } from '../utils/formatters';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import RecordSettlementModal from '../components/RecordSettlementModal';
 import {
-  ArrowLeftRight,
-  Sparkles,
   ArrowRight,
   CheckCircle2,
   Zap,
@@ -56,46 +54,46 @@ export default function WhoOwesWhom() {
   const minSettlements = debts?.minimumSettlements || [];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Page Header */}
-      <div>
-        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+      <div className="pb-1 border-b border-slate-200/60 dark:border-slate-800/60">
+        <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
           Who Owes Whom
         </h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Individual debt breakdown and algorithmically minimized settlement payments for {currentHousehold?.name}
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          Pairwise ledger balances and algorithmically simplified settlement transfers for {currentHousehold?.name}
         </p>
       </div>
 
       {/* Minimum Settlement Algorithm Banner & Cards */}
-      <div className="p-6 rounded-3xl bg-gradient-to-br from-brand-900 via-indigo-950 to-slate-950 text-white shadow-xl shadow-brand-950/30 border border-brand-800/40 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <div className="p-5 rounded-xl bg-white dark:bg-[#111622] border border-slate-200/90 dark:border-slate-800 shadow-subtle space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800/80">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-brand-500/20 text-brand-300 border border-brand-400/20">
-              <Zap className="w-5 h-5 text-amber-400" />
+            <div className="p-1.5 rounded-lg bg-teal-50 dark:bg-teal-950/50 text-teal-700 dark:text-teal-400">
+              <Zap className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white tracking-tight">
-                Minimum Settlement Algorithm (Optimal Cash Flow)
+              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+                Optimal Settlement Path (Minimum Cash Flow)
               </h2>
-              <p className="text-xs text-brand-200/70">
-                Solves circular debts so that all balances are cleared with the absolute minimum number of payments.
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                Simplifies circular and multi-party debts into the absolute minimum number of direct transactions.
               </p>
             </div>
           </div>
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-brand-500/30 text-brand-300 border border-brand-400/30 w-fit">
-            {minSettlements.length} payment{minSettlements.length === 1 ? '' : 's'} required
+          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 w-fit">
+            {minSettlements.length} transfer{minSettlements.length === 1 ? '' : 's'} required
           </span>
         </div>
 
         {minSettlements.length === 0 ? (
-          <div className="py-8 text-center bg-white/5 rounded-2xl border border-white/10">
-            <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
-            <p className="text-sm font-semibold text-white">All debts are completely settled!</p>
-            <p className="text-xs text-brand-200/60 mt-0.5">No outstanding payments required.</p>
+          <div className="py-8 text-center">
+            <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-1.5" />
+            <p className="text-xs font-bold text-slate-800 dark:text-slate-200">All debts are cleared</p>
+            <p className="text-[11px] text-slate-400 mt-0.5">No outstanding transfers required at this time.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
             {minSettlements.map((tx, idx) => {
               const isPayerMe = tx.fromUserId === user?.id;
               const isReceiverMe = tx.toUserId === user?.id;
@@ -103,40 +101,42 @@ export default function WhoOwesWhom() {
               return (
                 <div
                   key={idx}
-                  className={`p-4 rounded-2xl border backdrop-blur-md transition-all ${
+                  className={`p-4 rounded-lg border transition-colors flex flex-col justify-between ${
                     isPayerMe
-                      ? 'bg-rose-500/10 border-rose-400/30 text-white'
+                      ? 'bg-rose-50/40 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/40'
                       : isReceiverMe
-                      ? 'bg-emerald-500/10 border-emerald-400/30 text-white'
-                      : 'bg-white/5 border-white/10 text-white'
+                      ? 'bg-emerald-50/40 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900/40'
+                      : 'bg-slate-50/60 dark:bg-slate-850 border-slate-200/80 dark:border-slate-800'
                   }`}
                 >
-                  <div className="flex items-center justify-between gap-2 mb-2.5">
-                    <span className="text-xs font-bold text-brand-200">
-                      Step #{idx + 1}
-                    </span>
-                    <span className="text-base font-black font-mono text-white">
-                      {formatCurrency(tx.amount)}
-                    </span>
-                  </div>
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                        Transfer #{idx + 1}
+                      </span>
+                      <span className="text-sm font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">
+                        {formatCurrency(tx.amount)}
+                      </span>
+                    </div>
 
-                  <div className="flex items-center justify-between text-xs font-semibold py-2 px-3 bg-black/20 rounded-xl mb-3">
-                    <span className={isPayerMe ? 'text-rose-300 font-bold' : 'text-slate-200'}>
-                      {tx.fromUserName} {isPayerMe ? '(You)' : ''}
-                    </span>
-                    <ArrowRight className="w-3.5 h-3.5 text-brand-300 shrink-0" />
-                    <span className={isReceiverMe ? 'text-emerald-300 font-bold' : 'text-slate-200'}>
-                      {tx.toUserName} {isReceiverMe ? '(You)' : ''}
-                    </span>
+                    <div className="flex items-center justify-between text-xs font-medium py-2 px-2.5 bg-white dark:bg-slate-900/80 rounded border border-slate-200/60 dark:border-slate-800 mb-3">
+                      <span className={isPayerMe ? 'text-rose-700 dark:text-rose-400 font-bold' : 'text-slate-700 dark:text-slate-300'}>
+                        {tx.fromUserName} {isPayerMe ? '(You)' : ''}
+                      </span>
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <span className={isReceiverMe ? 'text-emerald-700 dark:text-emerald-400 font-bold' : 'text-slate-700 dark:text-slate-300'}>
+                        {tx.toUserName} {isReceiverMe ? '(You)' : ''}
+                      </span>
+                    </div>
                   </div>
 
                   {isPayerMe && (
                     <button
                       onClick={() => handleSettleClick(tx.toUserId, tx.amount)}
-                      className="w-full py-1.5 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold text-xs shadow transition-colors flex items-center justify-center gap-1.5"
+                      className="w-full py-1.5 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-semibold text-xs transition-colors flex items-center justify-center gap-1.5"
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>Settle Now</span>
+                      <span>Record Settlement</span>
                     </button>
                   )}
                 </div>
@@ -147,26 +147,24 @@ export default function WhoOwesWhom() {
       </div>
 
       {/* Direct Bilateral Debts Section */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-              Direct Pairwise Debts
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Pairwise ledger calculated directly from shared expenses minus payments
-            </p>
-          </div>
+      <div className="space-y-3">
+        <div>
+          <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
+            Direct Pairwise Debts
+          </h2>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            Un-simplified bilateral ledger calculated directly from individual shared transactions
+          </p>
         </div>
 
         {directDebts.length === 0 ? (
-          <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800">
-            <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
-            <p className="text-sm font-bold text-slate-800 dark:text-slate-200">Zero Direct Debts</p>
-            <p className="text-xs text-slate-400 mt-0.5">Everyone is square!</p>
+          <div className="p-8 text-center bg-white dark:bg-[#111622] rounded-xl border border-slate-200/90 dark:border-slate-800">
+            <CheckCircle2 className="w-6 h-6 text-emerald-500 mx-auto mb-1.5" />
+            <p className="text-xs font-bold text-slate-800 dark:text-slate-200">Zero Direct Debts</p>
+            <p className="text-[11px] text-slate-400 mt-0.5">Everyone is completely squared up.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {directDebts.map((debt, index) => {
               const isPayerMe = debt.fromUserId === user?.id;
               const isReceiverMe = debt.toUserId === user?.id;
@@ -174,24 +172,24 @@ export default function WhoOwesWhom() {
               return (
                 <div
                   key={index}
-                  className="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between"
+                  className="p-4 bg-white dark:bg-[#111622] rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-subtle flex flex-col justify-between"
                 >
                   <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                        Bilateral Debt
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                        Bilateral Balance
                       </span>
-                      <span className="text-lg font-black font-mono text-slate-900 dark:text-slate-100">
+                      <span className="text-sm font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">
                         {formatCurrency(debt.amount)}
                       </span>
                     </div>
 
-                    <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 mb-4 flex items-center justify-between text-xs font-semibold">
-                      <span className={isPayerMe ? 'text-rose-600 font-bold' : 'text-slate-800 dark:text-slate-200'}>
+                    <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 mb-3 flex items-center justify-between text-xs font-medium">
+                      <span className={isPayerMe ? 'text-rose-700 dark:text-rose-400 font-bold' : 'text-slate-700 dark:text-slate-300'}>
                         {debt.fromUserName} {isPayerMe ? '(You)' : ''}
                       </span>
                       <span className="text-slate-400 text-[11px]">owes</span>
-                      <span className={isReceiverMe ? 'text-emerald-600 font-bold' : 'text-slate-800 dark:text-slate-200'}>
+                      <span className={isReceiverMe ? 'text-emerald-700 dark:text-emerald-400 font-bold' : 'text-slate-700 dark:text-slate-300'}>
                         {debt.toUserName} {isReceiverMe ? '(You)' : ''}
                       </span>
                     </div>
@@ -200,9 +198,9 @@ export default function WhoOwesWhom() {
                   {isPayerMe && (
                     <button
                       onClick={() => handleSettleClick(debt.toUserId, debt.amount)}
-                      className="w-full py-2 px-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-sm shadow-brand-500/20 transition-all flex items-center justify-center gap-1.5"
+                      className="w-full py-1.5 px-3 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold text-xs transition-colors flex items-center justify-center gap-1.5"
                     >
-                      <CheckCircle2 className="w-4 h-4" />
+                      <CheckCircle2 className="w-3.5 h-3.5" />
                       <span>Record Payment</span>
                     </button>
                   )}
